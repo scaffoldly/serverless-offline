@@ -3,6 +3,9 @@ name: Publish Release
 on:
   workflow_dispatch:
 
+  release:
+    types: [published]
+
 jobs:
   publish:
     runs-on: ubuntu-latest
