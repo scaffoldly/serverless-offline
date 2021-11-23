@@ -1,3 +1,9 @@
+# ⚠️ FORK of `serverless-offline`
+
+NOTE: This is a fork of https://github.com/dherault/serverless-offline with the following PR's integreated:
+ - https://github.com/dherault/serverless-offline/pull/1301
+ - https://github.com/dherault/serverless-offline/pull/1302
+
 # Serverless Offline
 
 <p>
