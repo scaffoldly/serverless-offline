@@ -2,8 +2,6 @@ name: Publish Release
 
 on:
   workflow_dispatch:
-  push:
-    branches: ['@scaffoldly/serverless-offline']
 
 jobs:
   publish:
@@ -22,11 +20,6 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: yarn
       - run: yarn build
-      - uses: scaffoldly/bump-version-action@v1
-        with:
-          action: prerelease
-          version-file: package.json
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - run: yarn publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
