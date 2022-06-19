@@ -86,6 +86,10 @@ export default {
     usage:
       "When using HttpApi with a JWT authorizer, don't check the signature of the JWT token. This should only be used for local development.",
   },
+  lambdaHost: {
+    type: 'string',
+    usage: 'TODO',
+  },
   lambdaPort: {
     type: 'string',
     usage: 'Lambda http port to listen on. Default: 3002',
