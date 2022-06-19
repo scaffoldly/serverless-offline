@@ -24,6 +24,7 @@ export default {
   host: 'localhost',
   httpPort: 3000,
   httpsProtocol: '',
+  lambdaHost: 'localhost',
   lambdaPort: 3002,
   layersDir: null,
   noAuth: false,
@@ -37,6 +38,7 @@ export default {
   useDocker: false,
   useInProcess: false,
   webSocketHardTimeout: 7200,
+  websocketHost: 'localhost',
   webSocketIdleTimeout: 600,
   websocketPort: 3001,
 }

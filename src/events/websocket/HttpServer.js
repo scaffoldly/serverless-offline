@@ -14,10 +14,10 @@ export default class HttpServer {
     this.#options = options
     this.#webSocketClients = webSocketClients
 
-    const { host, websocketPort } = options
+    const { websocketHost, websocketPort } = options
 
     const serverOptions = {
-      host,
+      host: websocketHost,
       port: websocketPort,
       router: {
         // allows for paths with trailing slashes to be the same as without
@@ -37,7 +37,7 @@ export default class HttpServer {
     ]
     this.#server.route(routes)
 
-    const { host, httpsProtocol, websocketPort } = this.#options
+    const { websocketHost, httpsProtocol, websocketPort } = this.#options
 
     try {
       await this.#server.start()
@@ -52,7 +52,7 @@ export default class HttpServer {
     log.notice(
       `Offline [http for websocket] listening on http${
         httpsProtocol ? 's' : ''
-      }://${host}:${websocketPort}`,
+      }://${websocketHost}:${websocketPort}`,
     )
   }
 

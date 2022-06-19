@@ -107,6 +107,10 @@ export default {
     usage:
       "When using HttpApi with a JWT authorizer, don't check the signature of the JWT token. This should only be used for local development.",
   },
+  lambdaHost: {
+    type: 'string',
+    usage: 'TODO',
+  },
   lambdaPort: {
     type: 'string',
     usage: 'Lambda http port to listen on. Default: 3002',
@@ -164,6 +168,10 @@ export default {
     type: 'string',
     usage:
       'Set WebSocket hard timeout in seconds to reproduce AWS limits (https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html#apigateway-execution-service-websocket-limits-table). Default: 7200 (2 hours)',
+  },
+  websocketHost: {
+    type: 'string',
+    usage: 'TODO',
   },
   webSocketIdleTimeout: {
     type: 'string',

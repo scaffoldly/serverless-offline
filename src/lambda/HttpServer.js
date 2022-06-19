@@ -14,10 +14,10 @@ export default class HttpServer {
     this.#lambda = lambda
     this.#options = options
 
-    const { host, lambdaPort } = options
+    const { lambdaHost, lambdaPort } = options
 
     const serverOptions = {
-      host,
+      lambdaHost,
       port: lambdaPort,
     }
 
@@ -31,7 +31,7 @@ export default class HttpServer {
 
     this.#server.route([_invokeAsyncRoute, _invocationsRoute])
 
-    const { host, httpsProtocol, lambdaPort } = this.#options
+    const { lambdaHost, httpsProtocol, lambdaPort } = this.#options
 
     try {
       await this.#server.start()
@@ -46,11 +46,13 @@ export default class HttpServer {
     log.notice(
       `Offline [http for lambda] listening on http${
         httpsProtocol ? 's' : ''
-      }://${host}:${lambdaPort}`,
+      }://${lambdaHost}:${lambdaPort}`,
     )
 
     // Print all the invocation routes to debug
-    const basePath = `http${httpsProtocol ? 's' : ''}://${host}:${lambdaPort}`
+    const basePath = `http${
+      httpsProtocol ? 's' : ''
+    }://${lambdaHost}:${lambdaPort}`
     const funcNamePairs = this.#lambda.listFunctionNamePairs()
 
     log.notice(
