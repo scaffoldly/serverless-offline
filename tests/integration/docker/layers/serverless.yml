@@ -1,5 +1,7 @@
 service: docker-layer-tests
 
+configValidationMode: error
+
 plugins:
   - ./../../../../
 
@@ -17,10 +19,10 @@ custom:
 
 functions:
   hello:
-    layers:
-      - arn:aws:lambda:${self:provider.region}:744348701589:layer:bash:8
     events:
       - http:
           method: get
           path: hello
     handler: handler.hello
+    layers:
+      - arn:aws:lambda:${self:provider.region}:744348701589:layer:bash:8s

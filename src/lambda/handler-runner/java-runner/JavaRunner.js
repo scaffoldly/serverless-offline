@@ -1,40 +1,38 @@
-import { EOL } from 'os'
-import fetch from 'node-fetch'
+import { EOL } from 'node:os'
+import process from 'node:process'
+import { log } from '@serverless/utils/log.js'
 import { invokeJavaLocal } from 'java-invoke-local'
 
 const { parse, stringify } = JSON
 const { has } = Reflect
 
 export default class JavaRunner {
-  #env = null
-  #functionName = null
-  #handler = null
-  #deployPackage = null
   #allowCache = false
 
-  constructor(funOptions, env, allowCache, v3Utils) {
+  #deployPackage = null
+
+  #env = null
+
+  #functionName = null
+
+  #handler = null
+
+  constructor(funOptions, env, allowCache) {
     const { functionName, handler, servicePackage, functionPackage } =
       funOptions
 
+    this.#allowCache = allowCache
+    this.#deployPackage = functionPackage || servicePackage
     this.#env = env
     this.#functionName = functionName
     this.#handler = handler
-    this.#deployPackage = functionPackage || servicePackage
-    this.#allowCache = allowCache
-
-    if (v3Utils) {
-      this.log = v3Utils.log
-      this.progress = v3Utils.progress
-      this.writeText = v3Utils.writeText
-      this.v3Utils = v3Utils
-    }
   }
 
   // no-op
   // () => void
   cleanup() {}
 
-  _parsePayload(value) {
+  #parsePayload(value) {
     for (const item of value.split(EOL)) {
       let json
 
@@ -42,7 +40,7 @@ export default class JavaRunner {
       try {
         json = parse(item)
         // nope, it's not JSON
-      } catch (err) {
+      } catch {
         // no-op
       }
 
@@ -65,41 +63,36 @@ export default class JavaRunner {
       event,
     })
 
+    const data = stringify({
+      artifact: this.#deployPackage,
+      data: input,
+      function: this.#functionName,
+      handler: this.#handler,
+      jsonOutput: true,
+      serverlessOffline: true,
+    })
+
+    const httpOptions = {
+      body: data,
+      method: 'POST',
+    }
+
+    const port = process.env.JAVA_OFFLINE_SERVER || 8080
+
     let result
+
     try {
       // Assume java-invoke-local server is running
 
-      const data = stringify({
-        artifact: this.#deployPackage,
-        handler: this.#handler,
-        data: input,
-        function: this.#functionName,
-        jsonOutput: true,
-        serverlessOffline: true,
-        allowCache: this.#allowCache,
-      })
-
-      const httpOptions = {
-        method: 'POST',
-        body: data,
-      }
-
-      const port = process.env.JAVA_OFFLINE_SERVER || 8080
       const response = await fetch(
         `http://localhost:${port}/invoke`,
         httpOptions,
       )
       result = await response.text()
-    } catch (e) {
-      if (this.log) {
-        this.log.notice(
-          'Local java server not running. For faster local invocations, run "java-invoke-local --server" in your project directory',
-        )
-      } else {
-        console.log(
-          'Local java server not running. For faster local invocations, run "java-invoke-local --server" in your project directory',
-        )
-      }
+    } catch {
+      log.notice(
+        'Local java server not running. For faster local invocations, run "java-invoke-local --server" in your project directory',
+      )
 
       // Fallback invocation
       const args = [
@@ -116,13 +109,9 @@ export default class JavaRunner {
       ]
       result = invokeJavaLocal(args, this.#env)
 
-      if (this.log) {
-        this.log.notice(result)
-      } else {
-        console.log(result)
-      }
+      log.notice(result)
     }
 
-    return this._parsePayload(result)
+    return this.#parsePayload(result)
   }
 }

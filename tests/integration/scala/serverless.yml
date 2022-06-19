@@ -1,5 +1,10 @@
 service: scala-tests
 
+configValidationMode: error
+
+plugins:
+  - ../../../
+
 provider:
   name: aws
   runtime: java8
@@ -12,13 +17,10 @@ package:
 
 functions:
   hello:
-    handler: serverless.Handler
     events:
       - http:
           method: get
           path: hello
+    handler: serverless.Handler
     tags:
       VERSION: ${file(build/build.json):version}
-
-plugins:
-  - ../../../
