@@ -148,6 +148,7 @@ export default class RuntimeServer {
       options: {
         payload: {
           defaultContentType: "application/x-www-form-urlencoded",
+          maxBytes: 1024 * 1024 * 100,
           parse: false,
         },
         tags: ["runtime"],
