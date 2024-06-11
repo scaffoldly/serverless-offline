@@ -66,7 +66,7 @@ export default function invocationsRoute(lambda, options) {
         // allow: ['binary/octet-stream'],
         defaultContentType: "binary/octet-stream",
         // Set maximum size to 6 MB to match maximum invocation payload size in synchronous responses
-        maxBytes: 1024 * 1024 * 100,
+        maxBytes: 1024 * 1024 * 6,
         // request.payload will be a raw buffer
         parse: false,
       },
